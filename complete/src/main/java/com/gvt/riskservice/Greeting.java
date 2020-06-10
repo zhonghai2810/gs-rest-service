@@ -1,4 +1,4 @@
-package com.example.restservice;
+package com.gvt.riskservice;
 
 public class Greeting {
 

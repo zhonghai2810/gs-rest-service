@@ -1,4 +1,4 @@
-package com.example.restservice;
+package com.gvt.riskservice;
 
 import org.junit.jupiter.api.Test;
 
