@@ -20,7 +20,7 @@ public class AnalysisController {
 		return new Greeting(counter.incrementAndGet(), String.format(template, name));
 	}
 
-	@PostMapping(value = "/ana-risk",  consumes= MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/ana-risk",  consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public AnalysisResult analyze(@RequestBody InputInfo inputInfo) {
 
 		String expectedToken = inputInfo.getToken();

@@ -16,15 +16,17 @@
 package com.gvt.riskservice;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.Test;
 
+import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -47,6 +49,31 @@ public class GreetingControllerTests {
 		this.mockMvc.perform(get("/greeting").param("name", "Spring Community"))
 				.andDo(print()).andExpect(status().isOk())
 				.andExpect(jsonPath("$.content").value("Hello, Spring Community!"));
+	}
+
+	@Test
+	public void correctTokenShouldReturnSuccessMessage() throws Exception{
+
+		this.mockMvc.perform(post("/ana-risk")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"token\":\"GVT2020VALID\"}")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(content().contentType("application/json;charset=utf-8"))
+				.andExpect(jsonPath("$.result").value("ACCEPT"))
+				.andExpect(jsonPath("$.code").value(200))
+				.andDo(print());
+	}
+
+	@Test
+	public void wrongTokenShouldReturnFailedMessage() throws Exception{
+
+		this.mockMvc.perform(post("/ana-risk")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content("{\"token\":\"my-wrong-token\"}")
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(content().contentType("application/json;charset=utf-8"))
+				.andExpect(jsonPath("$.code").value(201))
+				.andDo(print());
 	}
 
 }
