@@ -8,11 +8,11 @@
 		<version>2.2.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.gvt</groupId>
 	<artifactId>rest-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>rest-service</name>
-	<description>Demo project for Spring Boot</description>
+	<description>琼景科技风控算法接口</description>
 
 	<properties>
 		<java.version>1.8</java.version>

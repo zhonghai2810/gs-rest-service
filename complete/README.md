@@ -1,7 +1,10 @@
 ### 运行风控服务：
-空算法体风控算法接口。
+1. 说明  
+空算法体风控服务接口。当访问令牌正确时，一律返回接受信用（ACCEPT）。
 
-> java -jar rest-service-0.0.1-SNAPSHOT.jar
+2. 运行服务
+
+> java -jar rest-service-1.0.0.jar
 
 > 端口：8080
 
@@ -9,7 +12,7 @@
  
 1. post
 
-2. 输入参数为json，只有一个：token，值必须为
+2. 输入参数为json，实际业务参数待定，目前只有一个：token，值必须为
 > GVT2020VALID
 
 示例：
@@ -23,7 +26,7 @@
 >
 >{"riskLevel":0.0,"result":null,"code":"201","msg":"没有访问权限"}
 2. 参数说明
->riskLevel代表风险值；
+>riskLevel代表量化的风险水平；
 >
 >result为ACCEPT或REFUSE，代表接受信贷申请或拒绝信贷申请；
 >
