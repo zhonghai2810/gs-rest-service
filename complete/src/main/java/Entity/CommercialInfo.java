@@ -7,6 +7,8 @@ import java.util.Date;
  */
 public class CommercialInfo {
 
+    private String companyName;
+
     private String legalRepresentative; // 法定代表人
 
     private String registeredCapital; // 注册资本
@@ -47,7 +49,8 @@ public class CommercialInfo {
 
     private String businessScope; // 经营范围
 
-    public CommercialInfo(String legalRepresentative, String registeredCapital, String  paidUpCapital, String fundDate, String operationStatus, String USCC, String businessRegistrationNo, String taxRegistrationNo, String organizationNo, String companyType, String businessIndustry, String auditDate, String registrationDepartment, String businessTerm, String taxPayerQualification, String employeeSize, int insuredEmployeeSize, String oldCompanyName, String englishName, String businessScope) {
+    public CommercialInfo(String companyName, String legalRepresentative, String registeredCapital, String  paidUpCapital, String fundDate, String operationStatus, String USCC, String businessRegistrationNo, String taxRegistrationNo, String organizationNo, String companyType, String businessIndustry, String auditDate, String registrationDepartment, String businessTerm, String taxPayerQualification, String employeeSize, int insuredEmployeeSize, String oldCompanyName, String englishName, String businessScope) {
+        this.companyName = companyName;
         this.legalRepresentative = legalRepresentative;
         this.registeredCapital = registeredCapital;
         this.paidUpCapital = paidUpCapital;
@@ -72,6 +75,14 @@ public class CommercialInfo {
 
 
     public CommercialInfo() {
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public String getLegalRepresentative() {

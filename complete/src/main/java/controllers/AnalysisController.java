@@ -1,21 +1,19 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import Entity.AnalysisInfo;
-import Entity.CommercialInfo;
-import Entity.OperationInfo;
-import Entity.TianYanChaInfo;
+import Entity.*;
 import com.gvt.riskservice.Greeting;
 import com.gvt.riskservice.InputInfo;
 import com.gvt.riskservice.ValidTokens;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import result.AnalysisResult;
-import result.OperationResult;
-import result.Result;
-import result.TianYanChaResult;
+import result.*;
 
 @RestController
 public class AnalysisController {
@@ -64,6 +62,7 @@ public class AnalysisController {
 		tianYanChaInfo.setWebsite("www.epicgal.com");
 
 		CommercialInfo commercialInfo = new CommercialInfo();
+		commercialInfo.setCompanyName("深圳璨宇贸易有限公司");
 		commercialInfo.setLegalRepresentative("曲盛");
 		commercialInfo.setRegisteredCapital("500万人民币");
 		commercialInfo.setPaidUpCapital("-");
@@ -114,6 +113,89 @@ public class AnalysisController {
 
 	}
 
+	@PostMapping(value = "/upstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
+	public Result getUpstreamInfo(@RequestBody InputInfo inputInfo) {
+		String expectedToken = inputInfo.getToken();
+		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
+			String resultCode = "201";
+			logger.info("FAILED -- {}", resultCode);
+			return new Result(resultCode);
+		}
 
+		UpstreamInfo upstreamInfo = new UpstreamInfo();
+
+		CommercialInfo commercialInfo = new CommercialInfo();
+		commercialInfo.setLegalRepresentative("John");
+		commercialInfo.setRegisteredCapital("1000万");
+
+		TianYanChaInfo tianYanChaInfo = new TianYanChaInfo();
+		tianYanChaInfo.setCompanyName("澳洲八喜贸易有限公司");
+		tianYanChaInfo.setCommercialInfo(commercialInfo);
+
+		upstreamInfo.setUpstreamSupplierInfo(tianYanChaInfo);
+		upstreamInfo.setAverageDeliveryTime(3);
+		upstreamInfo.setPaymentPeriod(30);
+		upstreamInfo.setPurchaseAmount(1456000);
+
+		TradeInfo tradeInfo1 = new TradeInfo("A2奶粉1段", "GVT120001", 350, 179.99, 62996.5, "批发价");
+		TradeInfo tradeInfo2 = new TradeInfo("A2奶粉2段", "GVT120002", 150, 159.99, 23998.5, "批发价");
+		TradeInfo tradeInfo3 = new TradeInfo("A2奶粉3段", "GVT120003", 50, 169.99, 8499.5, "折扣价");
+
+		List<TradeInfo> tradeInfoList = new ArrayList<>();
+		tradeInfoList.add(tradeInfo1);
+		tradeInfoList.add(tradeInfo2);
+		tradeInfoList.add(tradeInfo3);
+
+		Map<String, List<TradeInfo>> commercialInfoListMap = new HashMap<>();
+		commercialInfoListMap.put(upstreamInfo.getUpstreamSupplierInfo().getCompanyName(), tradeInfoList);
+
+		List<Map<String, List<TradeInfo>>> upstreamTradeList = new ArrayList<>();
+		upstreamTradeList.add(commercialInfoListMap);
+
+		logger.info("SUCCESS -- {}", upstreamInfo.getUpstreamSupplierInfo().getCompanyName());
+		return new UpstreamResult("200", upstreamTradeList);
+
+	}
+
+	@PostMapping(value = "/downstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
+	public Result getDownstreamInfo(@RequestBody InputInfo inputInfo) {
+
+		String expectedToken = inputInfo.getToken();
+		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
+			String resultCode = "201";
+			logger.info("FAILED -- {}", resultCode);
+			return new Result(resultCode);
+		}
+
+		DownstreamInfo downstreamInfo = new DownstreamInfo();
+		downstreamInfo.setSkuCount(120);
+		downstreamInfo.setProductSoldTotal(16500);
+		downstreamInfo.setAmountSoldTotal(1600000);
+
+		ChannelInfo channelInfo = new ChannelInfo();
+		channelInfo.setPlatformName("京东");
+		downstreamInfo.setDownstreamChannelInfo(channelInfo);
+
+		TradeInfo tradeInfo1 = new TradeInfo("A2奶粉1段", "GVT120001", 50, 279.99, 13999.5, "正常价");
+		TradeInfo tradeInfo2 = new TradeInfo("A2奶粉2段", "GVT120002", 100, 259.99, 25999, "做活动");
+		TradeInfo tradeInfo3 = new TradeInfo("A2奶粉3段", "GVT120003", 30, 269.99, 8099.7, "618");
+
+		List<TradeInfo> tradeInfoList = new ArrayList<>();
+
+		tradeInfoList.add(tradeInfo1);
+		tradeInfoList.add(tradeInfo2);
+		tradeInfoList.add(tradeInfo3);
+
+		Map<String, List<TradeInfo>> channelInfoListMap = new HashMap<>();
+		channelInfoListMap.put(downstreamInfo.getDownstreamChannelInfo().getPlatformName(), tradeInfoList);
+
+		List<Map<String, List<TradeInfo>>> downstreamTradeList = new ArrayList<>();
+		downstreamTradeList.add(channelInfoListMap);
+
+		logger.info("SUCCESS -- {}", downstreamInfo.getDownstreamChannelInfo().getPlatformName());
+
+		return new DownstreamResult("200", downstreamTradeList);
+
+	}
 
 }

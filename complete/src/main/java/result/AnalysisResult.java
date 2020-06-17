@@ -1,7 +1,6 @@
 package result;
 
 import Entity.AnalysisInfo;
-import enums.ResponseEnum;
 
 public class AnalysisResult extends Result {
 
