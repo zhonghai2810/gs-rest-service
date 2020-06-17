@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import Entity.AnalysisInfo;
 import Entity.CommercialInfo;
+import Entity.OperationInfo;
 import Entity.TianYanChaInfo;
 import com.gvt.riskservice.Greeting;
 import com.gvt.riskservice.InputInfo;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import result.AnalysisResult;
+import result.OperationResult;
 import result.Result;
 import result.TianYanChaResult;
 
@@ -87,5 +89,31 @@ public class AnalysisController {
 		logger.info("SUCCESS -- {}", tianYanChaInfo.getCompanyName());
 		return new TianYanChaResult("200", tianYanChaInfo);
 	}
+
+	@PostMapping(value = "/operation-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
+	public Result getOperationInfo(@RequestBody InputInfo inputInfo) {
+
+		String expectedToken = inputInfo.getToken();
+		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
+			String resultCode = "201";
+			logger.info("FAILED -- {}", resultCode);
+			return new Result(resultCode);
+		}
+
+		OperationInfo operationInfo = new OperationInfo();
+		operationInfo.setSaleAmount(5000000);
+		operationInfo.setSaleOrderCount(18000);
+		operationInfo.setAverageAmountOfOrders(277.8);
+		operationInfo.setAverageAmountOfPurchases(533.3);
+		operationInfo.setPurchaseAmount(8000000);
+		operationInfo.setPurchaseOrderCount(15000);
+		operationInfo.setRateOfGrossProfit(0.55);
+
+		logger.info("SUCCESS -- {}", operationInfo.getSaleAmount());
+		return new OperationResult("200", operationInfo);
+
+	}
+
+
 
 }
