@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 3) 启动注解 -->
+    <context:annotation-config>
+
+    </context:annotation-config>
+
+    <!--
+       读取properties 文件：
+            location="文件位置"
+            placeholder 占位符
+    -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!--
+     可以利用 ${key} 获取 *.properties 文件中的值
+    -->
+
+    <!--
+    注解方式 @Value 也可以完成这种值注入
+    @Value("${properties中的key}")
+    -->
+
+</beans>

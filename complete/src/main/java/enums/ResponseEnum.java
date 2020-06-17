@@ -1,4 +1,6 @@
-package com.gvt.riskservice;
+package enums;
+
+import com.gvt.riskservice.Constant;
 
 public enum ResponseEnum implements Constant {
 
