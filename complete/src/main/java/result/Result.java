@@ -2,7 +2,9 @@ package result;
 
 
 import enums.ResponseEnum;
+import lombok.Data;
 
+@Data
 public class Result {
 
     private String code;
@@ -23,19 +25,4 @@ public class Result {
     public Result() {
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 }

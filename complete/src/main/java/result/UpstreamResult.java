@@ -2,10 +2,17 @@ package result;
 
 import Entity.TradeInfo;
 import Entity.UpstreamInfo;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
 
+@Setter
+@Getter
+@NoArgsConstructor
 public class UpstreamResult extends Result{
 
     private List<Map<String, List<TradeInfo>>> upstreamInfos;
@@ -24,14 +31,4 @@ public class UpstreamResult extends Result{
         this.upstreamInfos = upstreamInfos;
     }
 
-    public UpstreamResult() {
-    }
-
-    public List<Map<String, List<TradeInfo>>> getUpstreamInfos() {
-        return upstreamInfos;
-    }
-
-    public void setUpstreamInfos(List<Map<String, List<TradeInfo>>> upstreamInfos) {
-        this.upstreamInfos = upstreamInfos;
-    }
 }

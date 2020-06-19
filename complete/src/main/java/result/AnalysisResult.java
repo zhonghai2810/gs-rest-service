@@ -1,7 +1,14 @@
 package result;
 
 import Entity.AnalysisInfo;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class AnalysisResult extends Result {
 
     private AnalysisInfo analysisInfo;
@@ -16,20 +23,4 @@ public class AnalysisResult extends Result {
         this.analysisInfo = analysisInfo;
     }
 
-    public AnalysisResult(AnalysisInfo analysisInfo) {
-        this.analysisInfo = analysisInfo;
-    }
-
-
-
-    public AnalysisResult() {
-    }
-
-    public AnalysisInfo getAnalysisInfo() {
-        return analysisInfo;
-    }
-
-    public void setAnalysisInfo(AnalysisInfo analysisInfo) {
-        this.analysisInfo = analysisInfo;
-    }
 }

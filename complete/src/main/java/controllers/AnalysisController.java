@@ -10,11 +10,14 @@ import Entity.*;
 import com.gvt.riskservice.Greeting;
 import com.gvt.riskservice.InputInfo;
 import com.gvt.riskservice.ValidTokens;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import result.*;
 
+@Api(tags = "风控服务模块")
 @RestController
 public class AnalysisController {
 
@@ -23,11 +26,13 @@ public class AnalysisController {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 
+	@ApiOperation(value = "PING")
 	@GetMapping("/greeting")
 	public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return new Greeting(counter.incrementAndGet(), String.format(template, name));
 	}
 
+	@ApiOperation(value = "获取借款方平台征信信息")
 	@PostMapping(value = "/ana-risk",  consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public Result analyze(@RequestBody InputInfo inputInfo) {
 
@@ -40,10 +45,21 @@ public class AnalysisController {
 
 		float riskLevel = 0.0f;
 		String result = AnalysisInfo.Result.ACCEPT.toString();
+
+		AnalysisInfo analysisInfo = new AnalysisInfo();
+		analysisInfo.setAverageLoanPeriod(20);
+		analysisInfo.setAveragePayOffPeriod(30);
+		analysisInfo.setLoanOrders(140);
+		analysisInfo.setOverdueCount(0);
+		analysisInfo.setRiskLevel(0.0f);
+		analysisInfo.setScore(98);
+		analysisInfo.setTotalLoanAmount(250000);
+		analysisInfo.setResult(result);
 		logger.info("SUCCESS -- {} -- {}", riskLevel, result);
-		return new AnalysisResult("200", new AnalysisInfo(riskLevel, result));
+		return new AnalysisResult("200", analysisInfo);
 	}
 
+	@ApiOperation(value = "获取借款方工商信息")
 	@PostMapping(value = "/commercial-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public Result getCommercialInfo(@RequestBody InputInfo inputInfo) {
 
@@ -89,6 +105,7 @@ public class AnalysisController {
 		return new TianYanChaResult("200", tianYanChaInfo);
 	}
 
+	@ApiOperation(value = "获取借款方经营数据报表")
 	@PostMapping(value = "/operation-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public Result getOperationInfo(@RequestBody InputInfo inputInfo) {
 
@@ -113,6 +130,7 @@ public class AnalysisController {
 
 	}
 
+	@ApiOperation(value = "获取借款方上游采购交易信息")
 	@PostMapping(value = "/upstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public Result getUpstreamInfo(@RequestBody InputInfo inputInfo) {
 		String expectedToken = inputInfo.getToken();
@@ -157,6 +175,7 @@ public class AnalysisController {
 
 	}
 
+	@ApiOperation(value = "获取借款方下游平台交易信息")
 	@PostMapping(value = "/downstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
 	public Result getDownstreamInfo(@RequestBody InputInfo inputInfo) {
 

@@ -1,10 +1,17 @@
 package result;
 
 import Entity.TradeInfo;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class DownstreamResult extends Result{
 
     private List<Map<String, List<TradeInfo>>> downstreamInfos;
@@ -23,14 +30,4 @@ public class DownstreamResult extends Result{
         this.downstreamInfos = downstreamInfos;
     }
 
-    public DownstreamResult() {
-    }
-
-    public List<Map<String, List<TradeInfo>>> getDownstreamInfos() {
-        return downstreamInfos;
-    }
-
-    public void setDownstreamInfos(List<Map<String, List<TradeInfo>>> downstreamInfos) {
-        this.downstreamInfos = downstreamInfos;
-    }
 }
