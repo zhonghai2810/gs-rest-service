@@ -26,7 +26,7 @@ public class CommercialInfoControllerTests {
                 .content("{\"token\":\"GVT2020VALID\"}")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType("application/json;charset=utf-8"))
-                .andExpect(jsonPath("$.tianYanChaInfo.companyName").value("深圳璨宇贸易有限公司"))
+                .andExpect(jsonPath("$.data.companyName").value("深圳璨宇贸易有限公司"))
                 .andDo(print());
     }
 

@@ -26,7 +26,7 @@ public class DownstreamInfoControllerTests {
                 .content("{\"token\":\"GVT2020VALID\"}")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType("application/json;charset=utf-8"))
-                .andExpect(jsonPath("$.downstreamInfos[0].京东[0].productName").value("A2奶粉1段"))
+                .andExpect(jsonPath("$.data[0].downstreamChannelName").value("京东"))
                 .andDo(print());
     }
 

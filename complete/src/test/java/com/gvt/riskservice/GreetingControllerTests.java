@@ -59,7 +59,7 @@ public class GreetingControllerTests {
 				.content("{\"token\":\"GVT2020VALID\"}")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(content().contentType("application/json;charset=utf-8"))
-				.andExpect(jsonPath("$.analysisInfo.result").value("ACCEPT"))
+				.andExpect(jsonPath("$.data.score").value(98))
 				.andExpect(jsonPath("$.code").value(200))
 				.andDo(print());
 	}

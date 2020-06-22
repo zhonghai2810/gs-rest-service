@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import DTO.AnalysisInfoDTO;
+import DTO.DownstreamInfoDTO;
+import DTO.UpstreamInfoDTO;
+import DTO.TianYanChaInfoDTO;
 import Entity.*;
 import com.gvt.riskservice.Greeting;
 import com.gvt.riskservice.InputInfo;
 import com.gvt.riskservice.ValidTokens;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +39,13 @@ public class AnalysisController {
 
 	@ApiOperation(value = "获取借款方平台征信信息")
 	@PostMapping(value = "/ana-risk",  consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
-	public Result analyze(@RequestBody InputInfo inputInfo) {
+	public ResultByType<AnalysisInfoDTO> analyze(@RequestBody @ApiParam(name = "body", value = "JSON格式") InputInfo inputInfo) {
 
 		String expectedToken = inputInfo.getToken();
 		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
 			String resultCode = "201";
 			logger.info("FAILED -- {}", resultCode);
-			return new Result(resultCode);
+			return new ResultByType(resultCode);
 		}
 
 		float riskLevel = 0.0f;
@@ -55,19 +60,28 @@ public class AnalysisController {
 		analysisInfo.setScore(98);
 		analysisInfo.setTotalLoanAmount(250000);
 		analysisInfo.setResult(result);
+
+		AnalysisInfoDTO analysisInfoDTO = new AnalysisInfoDTO();
+		analysisInfoDTO.setAverageLoanPeriod(analysisInfo.getAverageLoanPeriod());
+		analysisInfoDTO.setAveragePayOffPeriod(analysisInfo.getAveragePayOffPeriod());
+		analysisInfoDTO.setLoanOrders(analysisInfo.getLoanOrders());
+		analysisInfoDTO.setOverdueCount(analysisInfo.getOverdueCount());
+		analysisInfoDTO.setScore(analysisInfo.getScore());
+		analysisInfoDTO.setTotalLoanAmount(analysisInfo.getTotalLoanAmount());
+
 		logger.info("SUCCESS -- {} -- {}", riskLevel, result);
-		return new AnalysisResult("200", analysisInfo);
+		return new ResultByType("200", analysisInfoDTO);
 	}
 
 	@ApiOperation(value = "获取借款方工商信息")
 	@PostMapping(value = "/commercial-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
-	public Result getCommercialInfo(@RequestBody InputInfo inputInfo) {
+	public ResultByType<TianYanChaInfoDTO> getCommercialInfo(@RequestBody @ApiParam(name = "body", value = "JSON格式") InputInfo inputInfo) {
 
 		String expectedToken = inputInfo.getToken();
 		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
 			String resultCode = "201";
 			logger.info("FAILED -- {}", resultCode);
-			return new Result(resultCode);
+			return new ResultByType(resultCode);
 		}
 
 		TianYanChaInfo tianYanChaInfo = new TianYanChaInfo();
@@ -101,19 +115,24 @@ public class AnalysisController {
 
 		tianYanChaInfo.setCommercialInfo(commercialInfo);
 
+		TianYanChaInfoDTO tianYanChaInfoDTO = new TianYanChaInfoDTO();
+		tianYanChaInfoDTO.setCompanyName(tianYanChaInfo.getCompanyName());
+		tianYanChaInfoDTO.setFundDate(tianYanChaInfo.getCommercialInfo().getFundDate());
+		tianYanChaInfoDTO.setLegalRepresentative(tianYanChaInfo.getCommercialInfo().getLegalRepresentative());
+
 		logger.info("SUCCESS -- {}", tianYanChaInfo.getCompanyName());
-		return new TianYanChaResult("200", tianYanChaInfo);
+		return new ResultByType("200", tianYanChaInfoDTO);
 	}
 
 	@ApiOperation(value = "获取借款方经营数据报表")
 	@PostMapping(value = "/operation-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
-	public Result getOperationInfo(@RequestBody InputInfo inputInfo) {
+	public ResultByType<OperationInfo> getOperationInfo(@RequestBody @ApiParam(name = "body", value = "JSON格式") InputInfo inputInfo) {
 
 		String expectedToken = inputInfo.getToken();
 		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
 			String resultCode = "201";
 			logger.info("FAILED -- {}", resultCode);
-			return new Result(resultCode);
+			return new ResultByType(resultCode);
 		}
 
 		OperationInfo operationInfo = new OperationInfo();
@@ -126,18 +145,18 @@ public class AnalysisController {
 		operationInfo.setRateOfGrossProfit(0.55);
 
 		logger.info("SUCCESS -- {}", operationInfo.getSaleAmount());
-		return new OperationResult("200", operationInfo);
+		return new ResultByType("200", operationInfo);
 
 	}
 
 	@ApiOperation(value = "获取借款方上游采购交易信息")
 	@PostMapping(value = "/upstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
-	public Result getUpstreamInfo(@RequestBody InputInfo inputInfo) {
+	public ResultByType<List<UpstreamInfoDTO>> getUpstreamInfo(@RequestBody @ApiParam(name = "body", value = "JSON格式") InputInfo inputInfo) {
 		String expectedToken = inputInfo.getToken();
 		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
 			String resultCode = "201";
 			logger.info("FAILED -- {}", resultCode);
-			return new Result(resultCode);
+			return new ResultByType(resultCode);
 		}
 
 		UpstreamInfo upstreamInfo = new UpstreamInfo();
@@ -164,26 +183,38 @@ public class AnalysisController {
 		tradeInfoList.add(tradeInfo2);
 		tradeInfoList.add(tradeInfo3);
 
-		Map<String, List<TradeInfo>> commercialInfoListMap = new HashMap<>();
-		commercialInfoListMap.put(upstreamInfo.getUpstreamSupplierInfo().getCompanyName(), tradeInfoList);
+//		Map<String, List<TradeInfo>> commercialInfoListMap = new HashMap<>();
+//		commercialInfoListMap.put(upstreamInfo.getUpstreamSupplierInfo().getCompanyName(), tradeInfoList);
+//
+//		List<Map<String, List<TradeInfo>>> upstreamTradeList = new ArrayList<>();
+//		upstreamTradeList.add(commercialInfoListMap);
 
-		List<Map<String, List<TradeInfo>>> upstreamTradeList = new ArrayList<>();
-		upstreamTradeList.add(commercialInfoListMap);
+		UpstreamInfoDTO upstreamInfoDTO = new UpstreamInfoDTO();
+		upstreamInfoDTO.setUpstreamCompanyName(tianYanChaInfo.getCompanyName());
+		upstreamInfoDTO.setAverageDeliveryTime(upstreamInfo.getAverageDeliveryTime());
+		upstreamInfoDTO.setLegalRepresentative(upstreamInfo.getUpstreamSupplierInfo().getCommercialInfo().getLegalRepresentative());
+		upstreamInfoDTO.setPaymentPeriod(upstreamInfo.getPaymentPeriod());
+		upstreamInfoDTO.setPurchaseAmount(upstreamInfo.getPurchaseAmount());
+		upstreamInfoDTO.setRegisteredCapital(upstreamInfo.getUpstreamSupplierInfo().getCommercialInfo().getRegisteredCapital());
+		upstreamInfoDTO.setTradeInfos(tradeInfoList);
+
+		List<UpstreamInfoDTO> upstreamInfoDTOList = new ArrayList<>();
+		upstreamInfoDTOList.add(upstreamInfoDTO);
 
 		logger.info("SUCCESS -- {}", upstreamInfo.getUpstreamSupplierInfo().getCompanyName());
-		return new UpstreamResult("200", upstreamTradeList);
+		return new ResultByType("200", upstreamInfoDTOList);
 
 	}
 
 	@ApiOperation(value = "获取借款方下游平台交易信息")
 	@PostMapping(value = "/downstream-info", consumes={"application/json;charset=utf-8"}, produces = {"application/json;charset=utf-8"})
-	public Result getDownstreamInfo(@RequestBody InputInfo inputInfo) {
+	public ResultByType<List<DownstreamInfoDTO>> getDownstreamInfo(@RequestBody @ApiParam(name = "body", value = "JSON格式") InputInfo inputInfo) {
 
 		String expectedToken = inputInfo.getToken();
 		if(expectedToken == null || !expectedToken.equals(ValidTokens.VALID_Token)){
 			String resultCode = "201";
 			logger.info("FAILED -- {}", resultCode);
-			return new Result(resultCode);
+			return new ResultByType(resultCode);
 		}
 
 		DownstreamInfo downstreamInfo = new DownstreamInfo();
@@ -205,15 +236,25 @@ public class AnalysisController {
 		tradeInfoList.add(tradeInfo2);
 		tradeInfoList.add(tradeInfo3);
 
-		Map<String, List<TradeInfo>> channelInfoListMap = new HashMap<>();
-		channelInfoListMap.put(downstreamInfo.getDownstreamChannelInfo().getPlatformName(), tradeInfoList);
+//		Map<String, List<TradeInfo>> channelInfoListMap = new HashMap<>();
+//		channelInfoListMap.put(downstreamInfo.getDownstreamChannelInfo().getPlatformName(), tradeInfoList);
+//
+//		List<Map<String, List<TradeInfo>>> downstreamTradeList = new ArrayList<>();
+//		downstreamTradeList.add(channelInfoListMap);
 
-		List<Map<String, List<TradeInfo>>> downstreamTradeList = new ArrayList<>();
-		downstreamTradeList.add(channelInfoListMap);
+		DownstreamInfoDTO downstreamInfoDTO = new DownstreamInfoDTO();
+		downstreamInfoDTO.setAmountSoldTotal(downstreamInfo.getAmountSoldTotal());
+		downstreamInfoDTO.setProductSoldTotal(downstreamInfo.getProductSoldTotal());
+		downstreamInfoDTO.setSkuCount(downstreamInfo.getSkuCount());
+		downstreamInfoDTO.setDownstreamChannelName(downstreamInfo.getDownstreamChannelInfo().getPlatformName());
+		downstreamInfoDTO.setTradeInfos(tradeInfoList);
+
+		List<DownstreamInfoDTO> downstreamInfoDTOList = new ArrayList<>();
+		downstreamInfoDTOList.add(downstreamInfoDTO);
 
 		logger.info("SUCCESS -- {}", downstreamInfo.getDownstreamChannelInfo().getPlatformName());
 
-		return new DownstreamResult("200", downstreamTradeList);
+		return new ResultByType("200", downstreamInfoDTOList);
 
 	}
 

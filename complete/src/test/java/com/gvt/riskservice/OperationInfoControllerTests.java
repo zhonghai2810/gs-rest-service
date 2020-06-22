@@ -27,7 +27,7 @@ public class OperationInfoControllerTests {
                 .content("{\"token\":\"GVT2020VALID\"}")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType("application/json;charset=utf-8"))
-                .andExpect(jsonPath("$.operationInfo.saleAmount").value(5000000))
+                .andExpect(jsonPath("$.data.saleAmount").value(5000000))
                 .andDo(print());
     }
 
